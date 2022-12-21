@@ -7,6 +7,17 @@ const TodoInput = ({
   date,
   setDate,
 }) => {
+  const getCurrentDateInput = () => {
+    const dateObj = new Date();
+
+    const month = ("0" + (dateObj.getMonth() + 1)).slice(-2);
+    const day = ("0" + dateObj.getDate()).slice(-2);
+    const year = dateObj.getFullYear();
+
+    const shortDate = `${year}-${month}-${day}`;
+
+    return shortDate;
+  };
   return (
     <div className="input-wrapper">
       <input
@@ -32,10 +43,11 @@ const TodoInput = ({
       />
       <input
         className="input_data"
+        defaultValue={getCurrentDateInput()}
         type="date"
-        id="start"
-        name="trip-start"
-        value={date}
+        placeholder="Date"
+        onFocus={(e) => (e.target.type = "date")}
+        value={date || getCurrentDateInput()}
         onChange={(e) => {
           setDate(e.target.value);
         }}

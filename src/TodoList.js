@@ -92,7 +92,7 @@ const TodoList = ({ list, setTodos }) => {
     <>
       {list?.length > 0 ? (
         <>
-          <div>
+          <div className="wrapper-button">
             <button
               name="all"
               className={activeButton === "all" ? "active" : ""}
@@ -229,7 +229,12 @@ const TodoList = ({ list, setTodos }) => {
                   type="file"
                   onChange={handleChange}
                 />
-                <button onClick={() => handleUpload(entry)}>Upload</button>
+                <button
+                  className="delete-button"
+                  onClick={() => handleUpload(entry)}
+                >
+                  Upload
+                </button>
                 <div>
                   <a className="url" href={entry.url}>
                     {entry.url ? <button>download</button> : ""}

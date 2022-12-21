@@ -87,7 +87,7 @@ button {
   border: 1px solid #828691;
 }
 .active {
-  color: rgb(16, 53, 218);
+  color: rgb(219, 37, 37);
 }
 .add-button {
   color: #ffffff;
@@ -107,16 +107,12 @@ ul {
 li {
   width: 40%;
   padding: 10px 0px 0px 5px;
-  height: 40px;
+  min-height: 40px;
   text-align: left;
   margin-bottom: 15px;
   border: 1px solid #828691;
-  border-right: none;
   letter-spacing: 1px;
   transition: all 0.3s ease-out;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
 }
 .empty {
   font-size: 20px;
@@ -133,6 +129,9 @@ li {
   height: 40px;
 }
 @media (max-width: 575px) {
+  .App {
+    padding: 5px;
+  }
   h1 {
     font-weight: 300;
     color: #ffffff;
@@ -141,7 +140,7 @@ li {
     text-transform: uppercase;
   }
   body {
-    padding: 10px;
+    padding: 0px;
   }
   input {
     width: 100%;
@@ -151,11 +150,12 @@ li {
   .add-button {
     color: #ffffff;
     border: 1px solid #828691;
+    width: 100%;
   }
   .input-wrapper {
     display: flex;
     flex-wrap: wrap;
-    margin: 15px;
+    margin: 0px;
   }
   .input_head {
     width: 100%;
@@ -164,6 +164,41 @@ li {
     width: 100%;
   }
   .input_todo {
+    width: 100%;
+  }
+  .wrapper-button {
+    width: 100%;
+  }
+  button {
+    width: 100%;
+    margin-bottom: 5px;
+  }
+  .todo {
+    padding-left: 5px;
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    background-color: rgb(54, 63, 83);
+    margin-bottom: 10px;
+    padding-top: 5px;
+    padding-right: 5px;
+    padding-bottom: 5px;
+    border: 1px solid #828691;
+  }
+  li {
+    width: 85%;
+    margin-right: 0px;
+    padding: 10px 5px 5px 5px;
+    margin-bottom: 10px;
+    overflow-wrap: break-word;
+    border: 1px solid #828691;
+    height: auto;
+  }
+  .input_checkbox {
+    margin: 5px;
+    width: 30px;
+  }
+  .input_file {
     width: 100%;
   }
 }

@@ -9,10 +9,12 @@ const App = () => {
   const [todoHeadline, setTodoHeadline] = useState("");
   const [date, setDate] = useState("");
   const [todo, setTodo] = useState("");
-  const [todos, setTodos] = useState([]);
+  const [todos, setTodos] = useState(false);
+  // console.log(todos, todo);
 
   useEffect(() => {
     onSnapshot(collection(db, "todos"), (snapshot) => {
+      // console.log(snapshot.docs);
       setTodos(snapshot.docs.map((doc) => ({ ...doc.data(), id: doc.id })));
     });
   }, [todo]);
@@ -28,6 +30,7 @@ const App = () => {
       visibility: true,
       url: "",
     };
+    console.log(newItem);
     if (todo !== "" && date !== "" && todoHeadline !== "") {
       addDoc(collection(db, "todos"), newItem);
       setTodoHeadline("");

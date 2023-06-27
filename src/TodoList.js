@@ -2,6 +2,7 @@ import { deleteDoc, doc, updateDoc } from "firebase/firestore";
 import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
 import React, { useState } from "react";
 import { db, storage } from "./firebase";
+import Loader from "./loader/Loader";
 
 const TodoList = ({ list, setTodos }) => {
   const [activeButton, setActiveButton] = useState("all");
@@ -90,7 +91,7 @@ const TodoList = ({ list, setTodos }) => {
 
   return (
     <>
-      {list?.length > 0 ? (
+      {list?.length > 0 && list !== false ? (
         <>
           <div className="wrapper-button">
             <button
@@ -142,111 +143,135 @@ const TodoList = ({ list, setTodos }) => {
           </div>
           <ul className="todo-list">
             {list.map((entry) => (
-              <div
-                className="todo"
-                key={entry.id}
-                style={
-                  entry.visibility
-                    ? { visibility: "visible" }
-                    : { display: "none" }
-                }
-              >
-                <input
-                  className="input_checkbox"
-                  type="checkbox"
-                  defaultChecked={entry.check}
-                  onClick={() => {
-                    updateDoc(doc(db, "todos", entry.id), {
-                      check: !entry.check,
-                    });
-                  }}
-                />
-                <li className={entry.check ? "li_checked" : ""}>
+              <>
+                <div
+                  className="todo"
+                  key={entry.id}
+                  style={
+                    entry.visibility
+                      ? { visibility: "visible" }
+                      : { display: "none" }
+                  }
+                >
+                  <input
+                    className="input_checkbox"
+                    type="checkbox"
+                    defaultChecked={entry.check}
+                    onClick={() => {
+                      updateDoc(doc(db, "todos", entry.id), {
+                        check: !entry.check,
+                      });
+                    }}
+                  />
+                  <li className={entry.check ? "li_checked" : ""}>
+                    {edit === entry.id ? (
+                      <div>
+                        <input
+                          className="input_edit"
+                          type="text"
+                          value={valueHead}
+                          onChange={(e) => setValueHead(e.target.value)}
+                        />
+                        <input
+                          className="input_edit"
+                          type="text"
+                          value={value}
+                          onChange={(e) => setValue(e.target.value)}
+                        />
+                        <input
+                          className="input_edit"
+                          type="date"
+                          value={valueDate}
+                          onChange={(e) => {
+                            setValueDate(e.target.value);
+                          }}
+                        />
+                      </div>
+                    ) : (
+                      ""
+                    )}
+                    {entry?.todoHeadline} |{" "}
+                    {Date.parse(entry.date) / 1000 > currentDate
+                      ? " DEADLINE - "
+                      : " OVERDUE - "}
+                    {entry?.date} | {entry?.todo}
+                    {/* && item?.unwrap === false */}
+                  </li>
                   {edit === entry.id ? (
-                    <div className="">
-                      <input
-                        className="input_edit"
-                        type="text"
-                        value={valueHead}
-                        onChange={(e) => setValueHead(e.target.value)}
-                      />
-                      <input
-                        className="input_edit"
-                        type="text"
-                        value={value}
-                        onChange={(e) => setValue(e.target.value)}
-                      />
-                      <input
-                        className="input_edit"
-                        type="date"
-                        value={valueDate}
-                        onChange={(e) => {
-                          setValueDate(e.target.value);
-                        }}
-                      />
-                    </div>
+                    <button
+                      className="delete-button"
+                      onClick={() => saveTodo(entry)}
+                    >
+                      Save
+                    </button>
                   ) : (
-                    ""
+                    <button
+                      className="delete-button"
+                      onClick={() => {
+                        editTodo(
+                          entry.id,
+                          entry.todo,
+                          entry.todoHeadline,
+                          entry.date
+                        );
+                      }}
+                    >
+                      Edit
+                    </button>
                   )}
-                  {entry?.todoHeadline} | {entry?.todo} |
-                  {Date.parse(entry.date) / 1000 > currentDate
-                    ? " DEADLINE - "
-                    : " OVERDUE - "}{" "}
-                  {entry?.date}
-                </li>
-                {edit === entry.id ? (
-                  <button
-                    className="delete-button"
-                    onClick={() => saveTodo(entry)}
-                  >
-                    Save
-                  </button>
-                ) : (
                   <button
                     className="delete-button"
                     onClick={() => {
-                      editTodo(
-                        entry.id,
-                        entry.todo,
-                        entry.todoHeadline,
-                        entry.date
-                      );
+                      deleteDoc(doc(db, "todos", entry.id));
                     }}
                   >
-                    Edit
+                    Delete todo
                   </button>
-                )}
-                <button
-                  className="delete-button"
-                  onClick={() => {
-                    deleteDoc(doc(db, "todos", entry.id));
-                  }}
-                >
-                  Delete
-                </button>
-                <input
-                  className="input_file"
-                  type="file"
-                  onChange={handleChange}
-                />
-                <button
-                  className="delete-button"
-                  onClick={() => handleUpload(entry)}
-                >
-                  Upload
-                </button>
-                <div>
-                  <a className="url" href={entry.url}>
-                    {entry.url ? <button>download</button> : ""}
-                  </a>
+                  {!entry.url ? (
+                    <input
+                      className="input_file"
+                      type="file"
+                      onChange={handleChange}
+                    />
+                  ) : (
+                    ""
+                  )}
+
+                  {!entry.url ? (
+                    <button
+                      className="delete-button"
+                      onClick={() => handleUpload(entry)}
+                    >
+                      Upload
+                    </button>
+                  ) : (
+                    ""
+                  )}
+
+                  <div className="url-button">
+                    <a href={entry.url}>
+                      {entry.url ? (
+                        <button className="delete-button">Download file</button>
+                      ) : (
+                        ""
+                      )}
+                    </a>
+                  </div>
                 </div>
-              </div>
+                <div className="unwrap">
+                  {" "}
+                  {entry?.todo?.length + entry?.todoHeadline?.length > 130
+                    ? "далее"
+                    : null}
+                </div>
+              </>
             ))}
           </ul>
         </>
       ) : (
         <div className="empty">
-          <p>No task found</p>
+          {}
+          {list ? <p>No task found</p> : <Loader />}
         </div>
       )}
     </>
